@@ -1,4 +1,5 @@
 import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -13,6 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -125,7 +127,17 @@ public class MovingAroundGridPane extends Application {
 	 * @param faster the faster
 	 */
 	private void changeSpeed(boolean faster) {
-		//TODO: Code this method
+		if (t.getStatus() == Animation.Status.RUNNING) {
+			t.pause();
+		}
+		
+		if (faster) {
+			duration >>>= 1;
+		} else {
+			duration <<= 1;
+		}
+		initTimeline();
+		t.play();
 	}
 	
 	/**
@@ -136,7 +148,9 @@ public class MovingAroundGridPane extends Application {
 	 *      set the text in lblDuration to reflect the current duration
 	 */
 	private void initTimeline() {
-		//TODO: Code this method
+		t = new Timeline(new KeyFrame(Duration.millis(1000), ae -> stepSim()));
+		t.setCycleCount(Animation.INDEFINITE);
+		lblDuration.setText("Duration = " + duration);
 	}
 	
 	/**
@@ -193,8 +207,15 @@ public class MovingAroundGridPane extends Application {
 	 * @return the next state - either MOVE_RIGHT or MOVE_DOWN
 	 */
 	private int moveRight() {
-		//TODO: Implement this method
-		return -1;
+		cellX++;
+		
+		if (MAX_X_CELLS - 1 == cellX) {
+			nextState = MOVE_DOWN;
+			return nextState;
+		} else {
+			nextState = MOVE_RIGHT;
+			return nextState;
+		}
 	}
 	
 	/**
@@ -203,8 +224,15 @@ public class MovingAroundGridPane extends Application {
 	 * @return the next state - either MOVE_DOWN or MOVE_LEFT
 	 */
 	private int moveDown() {
-		//TODO: Implement this method
-		return -1;
+		cellY++;
+		
+		if (MAX_Y_CELLS - 1 == cellY) {
+			nextState = MOVE_LEFT;
+			return nextState;
+		} else {
+			nextState = MOVE_DOWN;
+			return nextState;
+		}
 	}
 	
 	/**
@@ -213,8 +241,15 @@ public class MovingAroundGridPane extends Application {
 	 * @return the next state - either MOVE_LEFT or MOVE_UP
 	 */
 	private int moveLeft() {
-		//TODO: Implement this method
-		return -1;
+		cellX--;
+		
+		if (0 == cellX) {
+			nextState = MOVE_UP;
+			return nextState;
+		} else {
+			nextState = MOVE_LEFT;
+			return nextState;
+		}
 	}
 	
 	/**
@@ -223,8 +258,15 @@ public class MovingAroundGridPane extends Application {
 	 * @return the next state - either MOVE_UP or MOVE_RIGHT
 	 */
 	private int moveUp() {
-		//TODO: Implement this method
-		return -1;
+		cellY--;
+		
+		if (0 == cellY) {
+			nextState = MOVE_RIGHT;
+			return nextState;
+		} else {
+			nextState = MOVE_UP;
+			return nextState;
+		}
 	}
 		
 	
@@ -239,9 +281,38 @@ public class MovingAroundGridPane extends Application {
 	 * 3. Update current state to the next state...
 	 */
 	private void stepSim() {
-		// TODO: Code this method. Assume that at time == 0, triangle is
-		//       in top left GridPane cell, facing right.
-
+		switch (currState) {
+		 case MOVE_RIGHT:
+			 currState = moveRight();
+				 t1.setVisible(false);
+				 t2.setVisible(true);
+				 t3.setVisible(false);
+				 t4.setVisible(false);
+				 break;
+		 case MOVE_DOWN:
+			 currState = moveDown();
+				 t1.setVisible(false);
+				 t2.setVisible(false);
+				 t3.setVisible(true);
+				 t4.setVisible(false);
+				 break;
+		 case MOVE_LEFT:
+			 currState = moveLeft();
+				 t1.setVisible(false);
+				 t2.setVisible(false);
+				 t3.setVisible(false);
+				 t4.setVisible(true);
+				 break;
+		 case MOVE_UP:
+			 currState = moveUp();
+				 t1.setVisible(true);
+				 t2.setVisible(false);
+				 t3.setVisible(false);
+				 t4.setVisible(false);
+				 break;
+		}
+		gp.getChildren().removeAll(sp);
+		gp.add(sp, cellX, cellY);
 	}
 	
 	/**
