@@ -148,7 +148,7 @@ public class MovingAroundGridPane extends Application {
 	 *      set the text in lblDuration to reflect the current duration
 	 */
 	private void initTimeline() {
-		t = new Timeline(new KeyFrame(Duration.millis(1000), ae -> stepSim()));
+		t = new Timeline(new KeyFrame(Duration.millis(duration), ae -> stepSim()));
 		t.setCycleCount(Animation.INDEFINITE);
 		lblDuration.setText("Duration = " + duration);
 	}
